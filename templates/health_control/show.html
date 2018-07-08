@@ -1,0 +1,91 @@
+{% extends 'base/base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <div class="container col-lg-9">
+        <div class="card mb-3 table-responsive">
+            <div class="card-block">
+                <div class="card-header">
+                    Control medico de {{ object.patient.lastName }} {{ object.patient.name }}  
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover text-center">
+                        <tbody>
+                            <tr>
+                                <td>Fecha:</td>
+                                <td>{{ object.date }}</td>
+                            </tr>
+                            <tr>
+                                <td>Edad:</td>
+                                <td>{{ object.age }}</td>
+                            </tr>
+                            <tr>
+                                <td>Peso:</td>
+                                <td>{{ object.weight }}</td>
+                            </tr>
+                            <tr>
+                                <td>Talla:</td>
+                                <td>{{ object.height }}</td>
+                            </tr>
+                            <tr>
+                                <td>¿Vacunas completas?:</td>
+                                <td>{% if object.vaccines %} Si {% else %} No {% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td>Vacunas observaciones:</td>
+                                <td>{{ object.vaccines_obs }}</td>
+                            </tr>
+                            <tr>
+                                <td>¿Maduracion acorde?:</td>
+                                <td>{% if object.maturation %} Si {% else %} No {% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td>Maduracion observaciones:</td>
+                                <td>{{ object.maturation_obs }}</td>
+                            </tr>
+                            <tr>
+                                <td>¿Examen fisico normal?:</td>
+                                <td>{% if object.phisical_exam %} Si {% else %} No {% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td>Examen fisico observaciones:</td>
+                                <td>{{ object.phisical_exam_obs }}</td>
+                            </tr>
+                            <tr>
+                                <td>PC:</td>
+                                <td>{{ object.pc }}</td>
+                            </tr>
+                            <tr>
+                                <td>PPC:</td>
+                                <td>{{ object.ppc }}</td>
+                            </tr>
+                            <tr>
+                                <td>Alimentacion:</td>
+                                <td>{{ object.feeding }}</td>
+                            </tr>
+                            <tr>
+                                <td>Observaciones generales:</td>
+                                <td>{{ object.observations }}</td>
+                            </tr>
+                            <tr>
+                                <td>Pediatra:</td>
+                                <td>{{ object.user.username }}</td>
+                            </tr>
+                            <tr>
+                                <td>Detalles del paciente:</td>
+                                {% url 'patient:patient_show' object.patient.id as patient_url %}
+                                <td>{% bootstrap_button "Ir a detalles" button_type="link" button_class="btn btn-primary btn-xs" href=patient_url %}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-transparent">
+                    {% url 'health_control:health_control_update' object.id as update_url %}
+                    {% bootstrap_button "Editar" button_type="link" button_class="btn btn-primary btn-xs" href=update_url %}
+                    {% url 'health_control:health_control_delete' object.id as delete_url %}
+                    {% bootstrap_button "Eliminar" button_type="link" button_class="btn btn-danger btn-xs" href=delete_url %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

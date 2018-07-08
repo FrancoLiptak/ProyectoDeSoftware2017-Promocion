@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+{% load bootstrap4 %}
+{% load staticfiles %}
+
+{% block content %}
+
+    <div class="container col-lg-9">
+        <div class="card mb-3 table-responsive">
+            <div class="card-block">
+                <div class="card-header">
+                    Nuevo usuario
+                </div>
+                <div class="card-body">
+                    <form class="form-horizontal" role="form" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for field in form %}
+                                <div class="form-group col-md-6">
+                                    {% bootstrap_field field %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% bootstrap_button "Registrar" button_type="submit" button_class="btn-primary" %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% load bootstrap4 %}
+{% block content %}
+
+<form role="form" action="{% url 'users:users_delete' object.pk %}" method="post">
+    {% csrf_token %}
+    <p>Desea eliminar al usuario {{object.username}}?</p>
+    <button class="btn btn-danger" type="submit">Sí, eliminar</button>
+    <a class="btn btn-default" onclick="return cerrar_modal()">Cancelar</a>
+</form>
+
+{% endblock %}
+
+{% block finish %}
+<script>
+    function cerrar_modal(){
+        modal.dialog("close");
+    }
+</script>
+{% endblock %}

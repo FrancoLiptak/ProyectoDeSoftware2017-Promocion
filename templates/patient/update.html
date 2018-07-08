@@ -1,0 +1,38 @@
+{% extends 'base/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+
+<div class="container col-lg-9">
+        <div class="card mb-3 table-responsive">
+            <div class="card-block">
+                <div class="card-header">
+                    Editar paciente
+                </div>
+                <div class="card-body">
+                    <form class="form-horizontal" role="form" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <legend>Datos personales </legend>
+                            {% for field in form %}
+                                <div class="form-group col-md-6">
+                                    {% bootstrap_field field %}
+                                </div>
+                            {% endfor %}
+                            <legend>Datos demográficos</legend>
+                            {% for field in form2 %}
+                                <div class="form-group col-md-6">
+                                    {% bootstrap_field field %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% bootstrap_button "Guardar" button_type="submit" button_class="btn-primary" %}
+                    </form>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'patient:patient_show' patient.id %}" class="btn btn-secondary btn-sm">Volver al perfil</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

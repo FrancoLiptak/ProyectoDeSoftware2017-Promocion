@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %}
+{% load bootstrap4 %}
+{% load staticfiles%}
+{% block sideMenu %}
+{% endblock %}
+{% block stylesheet %}
+    <link href="{% static 'css/noSidebar.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container col-lg-9">
+    <div class="card mb-3 table-responsive">
+        <div class="card-block">
+            <div class="card-header">
+                403: Acceso Denegado
+            </div>
+            <div class="card-body">
+                <h4>
+                    {% if exception %}
+                        <p>{{ exception }}</p>
+                    {% else %}
+                        <p>Acceso restringido</p>
+                    {% endif %}
+                </h4>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base/base.html' %}
+{% load bootstrap4 %}
+{% load configuration_tags %}
+{% load staticfiles %}
+
+{% block content %}
+    
+    <div class="container col-lg-9">
+        <div class="card mb-3 table-responsive">
+            <div class="card-block">
+                <div class="card-header">
+                    Detalles de {{ object.username }}
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover text-center">
+                        <tbody>
+                            <tr>
+                                <td>Nombre de usuario:</td>
+                                <td>{{ object.username }}</td>
+                            </tr>
+                            <tr>
+                                <td>Nombre:</td>
+                                <td>{{ object.first_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Apellido:</td>
+                                <td>{{ object.last_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Email:</td>
+                                <td>{{ object.email }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tipos:</td>
+                                <td>
+                                    {% for group in object.groups.all %}
+                                        | {{ group }} |
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Activo:</td>
+                                <td>{% if user.is_active %} Si {% else %} No {% endif %}</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-transparent">
+                    {% url 'users:users_update' user.id as users_update_url %}
+                    <td>{% bootstrap_button "Editar" button_type="link" button_class="btn btn-secondary btn-sm" href=users_update_url %}</td>
+                    <a onclick="return abrir_modal('{% url 'users:users_delete' user.id %}','Eliminar usuario')" class="btn btn-danger btn-sm">
+                            Eliminar
+                    </a>
+                    <a href="{% url 'users:users_list' %}" class="btn btn-secondary btn-sm">Volver al listado</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL ELIMINAR -->
+
+    <form method="post" class="modal fade" id="modalRemove">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Eliminar usuario</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        ¿Está seguro de eliminar al usuario {{ object.username }}?
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <input type="hidden" id="deleteId" name="deleteId">
+                    <button type="submit" class="btn btn-danger" ><span class="glyphicon glyphicon-ok-sign"></span>Si</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>No</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <!-- FIN MODAL ELIMINAR -->
+
+{% endblock %}
+
+{% block finish %}
+<div id="popup"></div>
+
+<script>
+    var modal;
+    function abrir_modal(url, titulo){
+        modal = $('#popup').dialog(
+        {
+            title: titulo,
+            modal: true,
+            width: 500,
+            resizable: false
+        }).dialog('open').load(url)
+    }
+
+</script>
+{% endblock %}

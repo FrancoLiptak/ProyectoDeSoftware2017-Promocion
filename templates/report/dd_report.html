@@ -1,0 +1,273 @@
+{% extends 'base/base.html' %}
+{% load staticfiles%}
+
+{% block stylesheet %}    
+    <link href="{% static 'css/demographicReport.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container col-lg-9">
+    <div class="card mb-3 table-responsive">
+        <div class="card-block">
+            <div class="card-header">
+                <h5 class="card-title">Reporte demográfico</h5>
+                <img class="card-img-top" src="{% static 'img/graficos.jpg' %}" alt="Card image cap">
+                <div class="container" style="display: flex; justify-content: center;">
+                    <ul class="nav nav-pills flex-column flex-sm-row">
+                        <li><a class="nav-link flex-sm-fill text-sm-center" data-toggle="tab" href="#electricity">Electricidad</a></li>
+                        <li><a class="nav-link flex-sm-fill text-sm-center" data-toggle="tab" href="#fridge">Heladera</a></li>
+                        <li><a class="nav-link flex-sm-fill text-sm-center" data-toggle="tab" href="#livingPlace">Tipo de vivienda</a></li>
+                        <li><a class="nav-link flex-sm-fill text-sm-center" data-toggle="tab" href="#heating">Tipo de calefaccion</a></li>
+                        <li><a class="nav-link flex-sm-fill text-sm-center" data-toggle="tab" href="#water">Tipo de agua</a></li>
+                        <li><a class="nav-link flex-sm-fill text-sm-center" data-toggle="tab" href="#pet">Mascota</a></li>
+                    </ul>
+                </div>
+            </div>
+		</div>
+        <div class="tab-content statsContainer card-body">
+			<div id="electricity" class="statElement tab-pane fade">
+				<div id="electricityChartContainer" style="height: 370px; width: 100%;"></div>
+				<button id="electricityExportButton" class="btn btn-primary downloadbutton panel-footer" type="button"><span class="glyphicon glyphicon-download-alt"></span>  Descargar como PDF</button>	
+			</div>
+			<div id="fridge" class="statElement tab-pane fade">
+				<div id="fridgeChartContainer" style="height: 370px; width: 100%;"></div>
+				<button id="fridgeExportButton" class="btn btn-primary downloadbutton panel-footer" type="button"><span class="glyphicon glyphicon-download-alt"></span>  Descargar como PDF</button>
+			</div>
+			<div id="livingPlace" class="statElement tab-pane fade">
+				<div id="livingPlaceChartContainer" style="height: 370px; width: 100%;"></div>
+				<button id="livingPlaceExportButton" class="btn btn-primary downloadbutton panel-footer" type="button"><span class="glyphicon glyphicon-download-alt"></span>  Descargar como PDF</button>
+			</div>
+			<div id="heating" class="statElement tab-pane fade">
+				<div id="heatingChartContainer" style="height: 370px; width: 100%;"></div>
+				<button id="heatingExportButton" class="btn btn-primary downloadbutton panel-footer" type="button"><span class="glyphicon glyphicon-download-alt"></span>  Descargar como PDF</button>
+			</div>
+			<div id="water" class="statElement tab-pane fade">
+				<div id="waterChartContainer" style="height: 370px; width: 100%;"></div>
+				<button id="waterExportButton" class="btn btn-primary downloadbutton panel-footer" type="button"><span class="glyphicon glyphicon-download-alt"></span>  Descargar como PDF</button>
+			</div>
+			<div id="pet" class="statElement tab-pane fade">
+				<div id="petChartContainer" style="height: 370px; width: 100%;"></div>
+				<button id="petExportButton" class="btn btn-primary downloadbutton panel-footer" type="button"><span class="glyphicon glyphicon-download-alt"></span>  Descargar como PDF</button>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block finish %}
+<script>
+window.onload = function () {
+
+var electricityChart = new CanvasJS.Chart("electricityChartContainer", {
+    title: {
+        text: "Electricidad"
+    },
+	legend:{
+		cursor: "pointer",
+		itemclick: explodePie
+	},
+    data: [{
+        type: "pie",
+		showInLegend: true,
+		toolTipContent: "{name}: <strong>{y}%</strong>",
+		indexLabel: "{name} - {y}%",
+        dataPoints: [
+            {% for dataPoint in averageElectricity %}
+                { y: {{ dataPoint.value }} , name: "{{ dataPoint.name }}" },
+            {% endfor %}
+        ]
+    }]
+});
+
+electricityChart.render();
+
+var electricityCanvas = $("#electricityChartContainer .canvasjs-chart-canvas").get(0);
+var electricityDataURL = electricityCanvas.toDataURL();
+
+$("#electricityExportButton").click(function(){
+    var pdf = new jsPDF();
+    pdf.addImage(electricityDataURL, 'JPEG', 0, 0);
+    pdf.save("electricity.pdf");
+});
+
+var fridgeChart = new CanvasJS.Chart("fridgeChartContainer", {
+    title: {
+        text: "Heladera"
+    },
+	legend:{
+		cursor: "pointer",
+		itemclick: explodePie
+	},
+    data: [{
+        type: "pie",
+		showInLegend: true,
+		toolTipContent: "{name}: <strong>{y}%</strong>",
+		indexLabel: "{name} - {y}%",
+        dataPoints: [
+            {% for dataPoint in averageFridge %}
+                { y: {{ dataPoint.value }} , name: "{{ dataPoint.name }}" },
+            {% endfor %}
+        ]
+    }]
+});
+
+var fridgeCanvas = $("#fridgeChartContainer .canvasjs-chart-canvas").get(0);
+var fridgeDataURL = fridgeCanvas.toDataURL();
+
+$("#fridgeExportButton").click(function(){
+    var pdf = new jsPDF();
+    pdf.addImage(fridgeDataURL, 'JPEG', 0, 0);
+    pdf.save("fridge.pdf");
+});
+
+var livingPlaceChart = new CanvasJS.Chart("livingPlaceChartContainer", {
+    title: {
+        text: "Tipo de vivienda"
+    },
+	legend:{
+		cursor: "pointer",
+		itemclick: explodePie
+	},
+    data: [{
+        type: "pie",
+		showInLegend: true,
+		toolTipContent: "{name}: <strong>{y}%</strong>",
+		indexLabel: "{name} - {y}%",
+        dataPoints: [
+            {% for dataPoint in averageLivingPlace %}
+                { y: {{ dataPoint.value }} , name: "{{ dataPoint.name }}" },
+            {% endfor %}
+        ]
+    }]
+});
+
+var livingPlaceCanvas = $("#livingPlaceChartContainer .canvasjs-chart-canvas").get(0);
+var livingPlaceDataURL = livingPlaceCanvas.toDataURL();
+
+$("#livingPlaceExportButton").click(function(){
+    var pdf = new jsPDF();
+    pdf.addImage(livingPlaceDataURL, 'JPEG', 0, 0);
+    pdf.save("livingPlace.pdf");
+});
+
+var heatingChart = new CanvasJS.Chart("heatingChartContainer", {
+    title: {
+        text: "Tipo de calefaccion"
+    },
+	legend:{
+		cursor: "pointer",
+		itemclick: explodePie
+	},
+    data: [{
+        type: "pie",
+		showInLegend: true,
+		toolTipContent: "{name}: <strong>{y}%</strong>",
+		indexLabel: "{name} - {y}%",
+        dataPoints: [
+            {% for dataPoint in averageHeating %}
+                { y: {{ dataPoint.value }} , name: "{{ dataPoint.name }}" },
+            {% endfor %}
+        ]
+    }]
+});
+
+var heatingCanvas = $("#heatingChartContainer .canvasjs-chart-canvas").get(0);
+var heatingDataURL = heatingCanvas.toDataURL();
+
+$("#heatingExportButton").click(function(){
+    var pdf = new jsPDF();
+    pdf.addImage(heatingDataURL, 'JPEG', 0, 0);
+    pdf.save("heating.pdf");
+});
+var waterChart = new CanvasJS.Chart("waterChartContainer", {
+    title: {
+        text: "Tipo de agua"
+    },
+	legend:{
+		cursor: "pointer",
+		itemclick: explodePie
+	},
+    data: [{
+        type: "pie",
+		showInLegend: true,
+		toolTipContent: "{name}: <strong>{y}%</strong>",
+		indexLabel: "{name} - {y}%",
+        dataPoints: [
+            {% for dataPoint in averageWater %}
+                { y: {{ dataPoint.value }} , name: "{{ dataPoint.name }}" },
+            {% endfor %}
+        ]
+    }]
+});
+
+var waterCanvas = $("#waterChartContainer .canvasjs-chart-canvas").get(0);
+var waterDataURL = waterCanvas.toDataURL();
+
+$("#waterExportButton").click(function(){
+    var pdf = new jsPDF();
+    pdf.addImage(waterDataURL, 'JPEG', 0, 0);
+    pdf.save("water.pdf");
+});
+
+var petChart = new CanvasJS.Chart("petChartContainer", {
+    title: {
+        text: "Mascota"
+    },
+	legend:{
+		cursor: "pointer",
+		itemclick: explodePie
+	},
+    data: [{
+        type: "pie",
+		showInLegend: true,
+		toolTipContent: "{name}: <strong>{y}%</strong>",
+		indexLabel: "{name} - {y}%",
+        dataPoints: [
+            {% for dataPoint in averagePet %}
+                { y: {{ dataPoint.value }} , name: "{{ dataPoint.name }}" },
+            {% endfor %}
+        ]
+    }]
+});
+
+var petCanvas = $("#petChartContainer .canvasjs-chart-canvas").get(0);
+var petDataURL = petCanvas.toDataURL();
+
+$("#petExportButton").click(function(){
+    var pdf = new jsPDF();
+    pdf.addImage(petDataURL, 'JPEG', 0, 0);
+    pdf.save("pet.pdf");
+});
+
+function explodePie (e) {
+	if(typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
+		e.dataSeries.dataPoints[e.dataPointIndex].exploded = true;
+	} else {
+		e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;
+	}
+	e.chart.render();
+
+}
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+  var target = $(e.target).attr("href") // activated tab
+  if(target == '#fridge'){
+    fridgeChart.render();
+  }else if (target == '#livingPlace'){
+    livingPlaceChart.render();
+  }else if (target == '#heating'){
+    heatingChart.render();
+  }else if (target == '#water'){
+    waterChart.render();
+  }else if (target == '#electricity'){
+    electricityChart.render();
+  }else{
+    petChart.render();
+  }
+  console.log(target);
+});
+$('[href="#electricity"]').tab('show');
+}
+</script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+{% endblock %}

@@ -1,0 +1,26 @@
+.statsContainer {
+    padding-bottom: 30px
+}
+
+.statElement {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    overflow: hidden;
+}
+
+.downloadbutton {
+    float: right
+}
+
+.card-heading {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.card-title {
+    padding-bottom: 15px;
+}
+
+.tab-content {
+    padding-bottom: 5px;
+}

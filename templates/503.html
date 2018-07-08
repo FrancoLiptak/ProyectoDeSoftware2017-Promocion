@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% load bootstrap4 %}
+{% load staticfiles%}
+{% block sideMenu %}
+{% endblock %}
+{% block stylesheet %}
+    <link href="{% static 'css/noSidebar.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container col-lg-9">
+    <div class="card mb-3 table-responsive">
+        <div class="card-block">
+            <div class="card-header">
+                Sitio en mantenimiento
+            </div>
+            <div class="card-body">
+                <h4>
+                    Disculpe las molestias. Estamos trabajando para actualizar el sitio.
+                </h4>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+.statsContainer {
+    padding-bottom: 30px
+}
+
+.statElement {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    overflow: hidden;
+    border-top: 1px solid rgb(221, 221, 221);
+}
+
+.statElement:first-child {
+    border-top: 0;
+}
+
+.downloadbutton {
+    float: right
+}

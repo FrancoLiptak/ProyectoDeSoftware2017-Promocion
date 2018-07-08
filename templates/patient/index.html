@@ -1,0 +1,59 @@
+{% extends 'base/list.html' %}
+{% load bootstrap4 %}
+{% load configuration_tags %}
+{% load staticfiles %}
+
+{% block card-top %}
+    <div class="card-header">
+        Registro de pacientes
+    </div>
+    <img class="card-img-top" src="{% static 'img/patients.jpg' %}" alt="Card image cap">
+{% endblock %}  
+
+    {% block fieldsHeadPrincipalTable %}
+        <th>Apellido</th>
+        <th>Nombre</th>
+        <th>Número de documento</th>
+        <th>Historia Clinica</th>
+        <th>Perfil</th>
+    {% endblock %}
+
+      
+    {% block fieldsBodyPrincipalTable %}
+        {% for patient in object_list %}
+            <tr>
+            <td>{{ patient.lastName }}</td>
+            <td>{{ patient.name }}</td>
+            <td>{{ patient.documentNumber }}</td>
+            {% url 'health_control:health_control_list' patient.id as list_url %}
+            <td>{% bootstrap_button "Detalles" button_type="link" button_class="btn btn-primary btn-sm" href=list_url %}</td>
+            <td><a href="{% url 'patient:patient_show' patient.id %}" class="btn btn-primary btn-sm">Perfil</a></td>
+            </tr>
+        {% endfor %}
+    {% endblock %}
+
+    {% block card-footer %}
+        <div class="card-footer bg-transparent">
+            <a href="{% url 'report:demographic_data_report' %}" class="btn btn-primary btn-sm">Reporte de datos demográficos</a>
+        </div>
+    {% endblock %} 
+
+{% block finish %}
+    <script>
+        $(document).ready(function() 
+        {   
+            var table = $('#mytable').DataTable( {
+                "responsive": true,
+                "language": {
+                    url: "/static/localizacion/es_ES.json"
+                },
+                "aoColumnDefs": [{ 
+                "bSortable": false,
+                "aTargets": [3,4]
+                }],
+                "lengthChange": false,
+                "pageLength": {% items_per_page %}
+            } );
+        });
+    </script>    
+{% endblock %}

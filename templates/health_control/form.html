@@ -1,0 +1,83 @@
+{% extends 'base/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+
+<div class="container col-lg-9">
+        <div class="card mb-3 table-responsive">
+            <div class="card-block">
+                <div class="card-header">
+                    {{ header }} 
+                </div>
+                <div class="card-body">
+                    <form class="form-horizontal" role="form" method="post">
+                        {% csrf_token %}
+                        {% if form.user %}
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.date %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.weight %}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.height %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.vaccines %}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.vaccines_obs %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.maturation %}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.maturation_obs %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.phisical_exam %}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.phisical_exam_obs %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.pc %}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.ppc %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.feeding %}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.observations %}
+                            </div>
+                        </div>
+                        {% if form.user %}
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {% bootstrap_field form.user %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% bootstrap_button "Guardar" button_type="submit" button_class="btn-primary" %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

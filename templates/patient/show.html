@@ -1,0 +1,127 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+    <div class="container col-lg-9">
+        <div class="card mb-3 table-responsive">
+            <div class="card-block">
+                <div class="card-header">
+                    Detalles de {{ object.lastName }}, {{ object.name }}
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover text-center">
+                        <tbody>
+                            <tr>
+                                <td>Apellido:</td>
+                                <td>{{ object.lastName }}</td>
+                            </tr>
+                            <tr>
+                                <td>Nombre:</td>
+                                <td>{{ object.name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Fecha de nacimiento:</td>
+                                <td>{{ object.birthday }}</td>
+                            </tr>
+                            <tr>
+                                <td>Género:</td>
+                                <td>{{ object.gender }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tipo de documento:</td>
+                                <td>{{ object.documentType }}</td>
+                            </tr>
+                            <tr>
+                                <td>Número de documento:</td>
+                                <td>{{ object.documentNumber }}</td>
+                            </tr>
+                            <tr>
+                                <td>Domicilio:</td>
+                                <td>{{ object.address }}</td>
+                            </tr>
+                            <tr>
+                                <td>Teléfono / Celular:</td>
+                                <td>{{ object.phone }}</td>
+                            </tr>
+                            <tr>
+                                <td>Heladera:</td>
+                                <td>{{ object.dataDemographic.fridge }}</td>
+                            </tr>
+                            <tr>
+                                <td>Calefacción:</td>
+                                <td>{{ object.dataDemographic.heating }}</td>
+                            </tr>
+                            <tr>
+                                <td>Electricidad:</td>
+                                <td>{{ object.dataDemographic.electricity }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tipo de vivienda:</td>
+                                <td>{{ object.dataDemographic.typeOfHousing }}</td>
+                            </tr>
+                            <tr>
+                                <td>Mascota:</td>
+                                <td>{{ object.dataDemographic.pet }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tipo de agua:</td>
+                                <td>{{ object.dataDemographic.typeOfWater }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'patient:patient_update' patient.id %}" class="btn btn-secondary btn-sm">Editar</a></td>                        
+                    <!-- hay que ver el rol, para saber si es admin -->
+                    <a onclick="return abrir_modal('{% url 'patient:patient_delete' patient.id %}','Eliminar paciente')" class="btn btn-danger btn-sm">
+                            Eliminar
+                    </a>
+                    <a href="{% url 'patient:patient_index' %}" class="btn btn-secondary btn-sm">Volver al listado</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL ELIMINAR -->
+
+    <form method="post" class="modal fade" id="modalRemove">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Eliminar paciente</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        ¿Está seguro de eliminar al paciente {{ object.lastName }}, {{ object.name }}?
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <input type="hidden" id="deleteId" name="deleteId">
+                    <button type="submit" class="btn btn-danger" ><span class="glyphicon glyphicon-ok-sign"></span>Si</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>No</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <!-- FIN MODAL ELIMINAR -->
+
+{% endblock %}
+
+{% block finish %}
+<div id="popup"></div>
+
+<script>
+    var modal;
+    function abrir_modal(url, titulo){
+        modal = $('#popup').dialog(
+        {
+            title: titulo,
+            modal: true,
+            width: 500,
+            resizable: false
+        }).dialog('open').load(url)
+    }
+
+</script>
+{% endblock %}

@@ -1,0 +1,408 @@
+{% extends 'base/base.html' %}
+{% load report_filters %}
+
+{% load staticfiles%}
+
+{% block stylesheet %}    
+    <link href="{% static 'css/patientReport.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<h4 class="panel-title">Reporte - {{ patient.lastName }} {{ patient.name }}</h4>
+		</div>
+		<div class="statsContainer panel-body">
+			<div class="statElement">
+				<div id="growthChartContainer" style="height: 370px; width: 100%;"></div>
+				<button id="growthExportButton" class="btn btn-primary btn-xs downloadbutton" type="button"><span class="glyphicon glyphicon-download-alt"></span>  Descargar como PDF</button>	
+			</div>
+			<div class="statElement">
+				<div id="heightChartContainer" style="height: 370px; width: 100%;"></div>
+				<button id="heightExportButton" class="btn btn-primary btn-xs downloadbutton" type="button"><span class="glyphicon glyphicon-download-alt"></span>  Descargar como PDF</button>
+			</div>
+			<div class="statElement">
+				<div id="PPCChartContainer" style="height: 370px; width: 100%;"></div>
+				<button id="PPCExportButton" class="btn btn-primary btn-xs downloadbutton" type="button"><span class="glyphicon glyphicon-download-alt"></span>  Descargar como PDF</button>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block finish %}
+<script>
+window.onload = function () {
+
+var growthChart = new CanvasJS.Chart("growthChartContainer", {
+	zoomEnabled: true,
+	title:{
+		text: "Curva de crecimiento"
+	}, 
+	axisY:{
+		title: "Peso",
+		valueFormatString: "0' kg'",
+	},
+	axisX:{
+		title: "Semana",
+		valueFormatString: "'Semana '0",
+	},
+	toolTip: {
+		shared: true,
+		contentFormatter: function(e){
+			content = "Semana " + e.entries[0].dataPoint.x
+			if(e.entries[0].dataSeries.name === "Paciente"){
+				content += "<br/><span style=\"color:" + e.entries[0].dataSeries.color + "\">" + e.entries[0].dataSeries.name + ": </span><strong>" + e.entries[0].dataPoint.y + "</strong>"
+				for (var i = 1; i < e.entries.length; i++) {
+					content += "<br/><span style=\"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataPoint.y + "</span>";
+				}
+			}else{
+				for (var i = 0; i < e.entries.length; i++) {
+					content += "<br/><span style=\"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataPoint.y + "</span>";
+				}				
+			}
+			return content
+		}
+	},
+	legend:{
+		cursor: "pointer",
+		verticalAlign: "top",
+		horizontalAlign: "center",
+		dockInsidePlotArea: true,
+	},
+	data: [
+	{        
+		type: "line",
+		name: "Paciente",        
+		showInLegend: true,
+		dataPoints: [
+            {% for control in controls %}
+				{% if control.age|weeks <= 13  %}
+					{ x: {{ control.age|weeks|floatformat:"0" }} , y: {{ control.weight }} },     
+				{% endif %}
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#BF0000",
+		lineDashType: "dash",
+		markerSize: 0,
+		dataPoints: [
+            {% for dataPoint in averageGrowth %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y5 }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#FF7F00",
+		lineDashType: "dash",
+		markerSize: 0,
+		dataPoints: [
+            {% for dataPoint in averageGrowth %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y4 }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#007F00",
+		lineDashType: "dash",
+		markerSize: 0,
+		dataPoints: [
+            {% for dataPoint in averageGrowth %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y3  }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#FF7F00",
+		lineDashType: "dash",
+		markerSize: 0,
+		dataPoints: [
+            {% for dataPoint in averageGrowth %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y2 }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#BF0000",
+		lineDashType: "dash",
+		markerSize: 0,
+		dataPoints: [
+            {% for dataPoint in averageGrowth %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y1 }} },     
+            {% endfor %}
+		]
+	}]
+});
+
+growthChart.render();
+
+var growthCanvas = $("#growthChartContainer .canvasjs-chart-canvas").get(0);
+var growthDataURL = growthCanvas.toDataURL();
+
+$("#growthExportButton").click(function(){
+    var pdf = new jsPDF();
+    pdf.addImage(growthDataURL, 'JPEG', 0, 0, 200, 100);
+    pdf.save("crecimiento.pdf");
+});
+
+var heightChart = new CanvasJS.Chart("heightChartContainer", {
+	zoomEnabled: true,
+	title:{
+		text: "Curva de talla"
+	}, 
+	axisY:{
+		title: "Talla",
+		valueFormatString: "0 'cm'",
+	},
+	axisX:{
+		title: "Mes",
+		valueFormatString: "'Mes '0",
+	},
+	toolTip: {
+		shared: true,
+		contentFormatter: function(e){
+			content = "Semana " + e.entries[0].dataPoint.x
+			if(e.entries[0].dataSeries.name === "Paciente"){
+				content += "<br/><span style=\"color:" + e.entries[0].dataSeries.color + "\">" + e.entries[0].dataSeries.name + ": </span><strong>" + e.entries[0].dataPoint.y + "</strong>"
+				for (var i = 1; i < e.entries.length; i++) {
+					content += "<br/><span style=\"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataPoint.y + "</span>";
+				}
+			}else{
+				for (var i = 0; i < e.entries.length; i++) {
+					content += "<br/><span style=\"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataPoint.y + "</span>";
+				}				
+			}
+			return content
+		}
+	},
+	legend:{
+		cursor: "pointer",
+		verticalAlign: "top",
+		horizontalAlign: "center",
+		dockInsidePlotArea: true,
+	},
+	data: [{        
+		type: "line",
+		name: "Paciente",        
+		showInLegend: true,
+		dataPoints: [
+            {% for control in controls %}
+				{% if control.age|weeks <= 13  %}
+					{ x: {{ control.age|weeks|floatformat:"0" }} , y: {{ control.height }} },     
+				{% endif %}
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		markerSize: 0,
+		color: "#BF0000",
+		lineDashType: "dash",
+		dataPoints: [
+            {% for dataPoint in averageHeight %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y5 }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#FF7F00",
+		markerSize: 0,
+		lineDashType: "dash",
+		dataPoints: [
+            {% for dataPoint in averageHeight %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y4 }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		lineDashType: "dash",
+		showInLegend: false,
+		color: "#007F00",
+		markerSize: 0,
+		dataPoints: [
+            {% for dataPoint in averageHeight %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y3  }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#FF7F00",
+		markerSize: 0,
+		lineDashType: "dash",
+		dataPoints: [
+            {% for dataPoint in averageHeight %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y2 }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#BF0000",
+		lineDashType: "dash",
+		markerSize: 0,
+		dataPoints: [
+            {% for dataPoint in averageHeight %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y1 }} },     
+            {% endfor %}
+		]
+	},]
+});
+
+heightChart.render();
+
+var heightCanvas = $("#heightChartContainer .canvasjs-chart-canvas").get(0);
+var heightDataURL = heightCanvas.toDataURL();
+
+$("#heightExportButton").click(function(){
+    var pdf = new jsPDF();
+    pdf.addImage(heightDataURL, 'JPEG', 0, 0, 200, 100);
+    pdf.save("talla.pdf");
+});
+
+var PPCChart = new CanvasJS.Chart("PPCChartContainer", {
+	zoomEnabled: true,
+	title:{
+		text: "Curva de percentil perímetro cefálico"
+	}, 
+	axisY:{
+		title: "PPC",
+	},
+	axisX:{
+		title: "Semana",
+		valueFormatString: "'Semana '0",
+	},
+	toolTip: {
+		shared: true,
+		contentFormatter: function(e){
+			content = "Semana " + e.entries[0].dataPoint.x
+			if(e.entries[0].dataSeries.name === "Paciente"){
+				content += "<br/><span style=\"color:" + e.entries[0].dataSeries.color + "\">" + e.entries[0].dataSeries.name + ": </span><strong>" + e.entries[0].dataPoint.y + "</strong>"
+				for (var i = 1; i < e.entries.length; i++) {
+					content += "<br/><span style=\"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataPoint.y + "</span>";
+				}
+			}else{
+				for (var i = 0; i < e.entries.length; i++) {
+					content += "<br/><span style=\"color:" + e.entries[i].dataSeries.color + "\">" + e.entries[i].dataPoint.y + "</span>";
+				}				
+			}
+			return content
+		}
+	},
+	legend:{
+		cursor: "pointer",
+		verticalAlign: "top",
+		horizontalAlign: "center",
+		dockInsidePlotArea: true,
+	},
+	data: [{        
+		type: "line",
+		name: "Paciente",        
+		showInLegend: true,
+		dataPoints: [
+            {% for control in controls %}
+				{% if control.age|weeks <= 13  %}
+					{ x: {{ control.age|weeks|floatformat:"0" }} , y: {{ control.ppc }} },     
+				{% endif %}
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#BF0000",
+		markerSize: 0,
+		lineDashType: "dash",
+		dataPoints: [
+            {% for dataPoint in averagePpc %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y5 }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#FF7F00",
+		lineDashType: "dash",
+		markerSize: 0,
+		dataPoints: [
+            {% for dataPoint in averagePpc %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y4 }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#007F00",
+		markerSize: 0,
+		lineDashType: "dash",
+		dataPoints: [
+            {% for dataPoint in averagePpc %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y3  }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#FF7F00",
+		markerSize: 0,
+		lineDashType: "dash",
+		dataPoints: [
+            {% for dataPoint in averagePpc %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y2 }} },     
+            {% endfor %}
+		]
+	},
+	{        
+		type: "line",
+		showInLegend: false,
+		color: "#BF0000",
+		markerSize: 0,
+		lineDashType: "dash",
+		dataPoints: [
+            {% for dataPoint in averagePpc %}
+			{ x: {{ dataPoint.x }} , y: {{ dataPoint.y1 }} },     
+            {% endfor %}
+		]
+	},]
+});
+
+PPCChart.render();
+
+var PPCCanvas = $("#PPCChartContainer .canvasjs-chart-canvas").get(0);
+var PPCDataURL = PPCCanvas.toDataURL();
+
+$("#PPCExportButton").click(function(){
+	var pdf = new jsPDF();
+    pdf.addImage(PPCDataURL, 'JPEG', 0, 0, 200, 100);
+    pdf.save("ppc.pdf");
+});
+
+}
+</script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+{% endblock %}
+{% block footer %}
+    {% include 'footer.html.twig' %}
+{% endblock %}

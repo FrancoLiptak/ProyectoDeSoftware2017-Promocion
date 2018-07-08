@@ -1,0 +1,21 @@
+{% extends 'base/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+<div class="container col-lg-9">
+    <div class="card mb-3 table-responsive">
+        <div class="card-block">
+            <div class="card-header">
+                ¿Desea eliminar el control medico con fecha {{ object.date }}?
+            </div>
+            <div class="card-body">
+                <form  role="form" method="post">
+                    {% csrf_token %}
+                    {% bootstrap_button "Eliminar" button_type="submit" button_class="btn-primary" %}
+                    {% url 'health_control:health_control_list' as list_url %}
+                    {% bootstrap_button "Cancelar" button_type="link" button_class="btn-danger" href=list_url %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base/list.html' %}
+{% load bootstrap4 %}
+{% load report_filters %}
+{% load configuration_tags %}
+{% load staticfiles %}
+
+{% block card-top %}
+    <div class="card-header">
+        Historia clínica
+    </div>
+    <img class="card-img-top" src="{% static 'img/historia_clinica.jpg' %}" alt="Card image cap">
+{% endblock %}  
+
+    {% block fieldsHeadPrincipalTable %}
+        <th>Fecha</th>
+        <th>Edad</th>
+        <th>Peso</th>
+        <th>¿Vacunas completas?</th>
+        <th>¿Maduracion acorde?</th>
+        <th>¿Examen fisico normal?</th>
+        <th>PC</th>
+        <th>PPC</th>
+        <th>Talla</th>
+        <th>Ver Detalles</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+    {% endblock %}
+
+    {% block fieldsBodyPrincipalTable %}
+        {% for health_control in object_list %}
+            <tr>
+            <td>{{ health_control.date }}</td>
+            <td>{{ health_control.age|ages|floatformat:"0" }}</td>
+            <td>{{ health_control.weight }}</td>
+            <td>{% if health_control.vaccines %} Si {% else %} No {% endif %}</td>
+            <td>{% if health_control.maturation %} Si {% else %} No {% endif %}</td>
+            <td>{% if health_control.pshisical_exam %} Si {% else %} No {% endif %}</td>
+            <td>{{ health_control.pc }}</td>
+            <td>{{ health_control.ppc }}</td>
+            <td>{{ health_control.height }}</td>
+            {% url 'health_control:health_control_show' health_control.id as show_url %}
+            <td>{% bootstrap_button "Detalles" button_type="link" button_class="btn btn-primary btn-xs" href=show_url %}</td>
+            {% url 'health_control:health_control_update' health_control.id as update_url %}
+            <td>{% bootstrap_button "Editar" button_type="link" button_class="btn btn-primary btn-xs" href=update_url %}</td>
+            {% url 'health_control:health_control_delete' health_control.id as delete_url %}
+            <td>{% bootstrap_button "Eliminar" button_type="link" button_class="btn btn-danger btn-xs" href=delete_url %}</td>
+            </tr>
+        {% endfor %}
+    {% endblock %}
+
+    {% block card-footer %}
+        <div class="card-footer bg-transparent">
+            {% url 'health_control:health_control_create' patient_id as create_url %}
+            {% bootstrap_button "Nuevo Control" button_type="link" button_class="btn btn-primary btn-sm" href=create_url %}
+            {% url 'report:patient_report' patient_id as report_url %}
+            {% bootstrap_button "Reporte de paciente" button_type="link" button_class="btn btn-primary btn-sm" href=report_url %}
+
+            <a href="{% url 'patient:patient_index' %}" class="btn btn-secondary btn-sm">Volver al listado</a>
+        </div>
+    {% endblock %} 
+
+{% block finish %}
+    <script>
+        $(document).ready(function() 
+        {   
+            var table = $('#mytable').DataTable( {
+                "responsive": true,
+                "language": {
+                    url: "/static/localizacion/es_ES.json"
+                },
+                "aoColumnDefs": [{ 
+                "bSortable": false,
+                "aTargets": [9,10,11]
+                }],
+                "lengthChange": false,
+                "pageLength": {% items_per_page %}
+            } );
+        });
+    </script>    
+{% endblock %}
