@@ -37,21 +37,23 @@ Ninguno de los integrantes del grupo había usado Django previamente, y este tra
 
 El grupo eligió Django por varias razones:
 
-Es conocido por facilitar mucho el diseño de sistemas complejos. Enfatiza la reutilización y la capacidad de conexión de los componentes.
-Se basa en la filosofía DRY (Don’t Repeat Yourself).
-La comunidad de Django es muy grande. A la hora de desarrollar una determinada funcionalidad, es conveniente ver si no existe un paquete que provea dicha funcionalidad, la cual se podría usar en nuestro proyecto con poca o ninguna modificación. Un claro ejemplo de esto en nuestro trabajo fue el desarrollo de la aplicación para el bot de Telegram.
-Django tiene un panel de administración que permite hacer un CRUD de los distintos modelos, lo cual puede ser muy cómodo. Esto fue usado en nuestro trabajo para la configuración inicial del sitio.
-Incluye un ORM, que mapea fácilmente objetos a tablas en la base de datos. Es compatible con MySQL, SQLite, DB2 y PostgreSQL, entre otros. En nuestro trabajo usamos PostgreSQL.
-Utiliza QuerySet (conjunto de consultas). En esencia, un QuerySet sería una lista de objetos de un modelo determinado. Permite leer datos de la base, filtrarlos y ordenarlos.
-La migración se vuelve bastante fácil. Basta con usar el comando “makemigrations” para crear las migraciones, y “migrate”.
-Hay mucha documentación disponible, y tutoriales en internet.
-Django REST framework es un conjunto de herramientas que permite la construcción de APIs. Fue utilizado para la API de turnos.
-Es un framework muy usado actualmente. En busca de crecimiento profesional por parte de los integrantes del grupo, pareció importante tener una experiencia con este framework, y por ende con Python.
+- Es conocido por facilitar mucho el diseño de sistemas complejos. Enfatiza la reutilización y la capacidad de conexión de los componentes.
+- Se basa en la filosofía DRY (Don’t Repeat Yourself).
+- La comunidad de Django es muy grande. A la hora de desarrollar una determinada funcionalidad, es conveniente ver si no existe un paquete que provea dicha funcionalidad, la cual se podría usar en nuestro proyecto con poca o ninguna modificación. Un claro ejemplo de esto en nuestro trabajo fue el desarrollo de la aplicación para el bot de Telegram.
+- Django tiene un panel de administración que permite hacer un CRUD de los distintos modelos, lo cual puede ser muy cómodo. - Esto fue usado en nuestro trabajo para la configuración inicial del sitio.
+- Incluye un ORM, que mapea fácilmente objetos a tablas en la base de datos. Es compatible con MySQL, SQLite, DB2 y PostgreSQL, entre otros. En nuestro trabajo usamos PostgreSQL.
+- Utiliza QuerySet (conjunto de consultas). En esencia, un QuerySet sería una lista de objetos de un modelo determinado. Permite leer datos de la base, filtrarlos y ordenarlos.
+- La migración se vuelve bastante fácil. Basta con usar el comando “makemigrations” para crear las migraciones, y “migrate”.
+- Hay mucha documentación disponible, y tutoriales en internet.
+- Django REST framework es un conjunto de herramientas que permite la construcción de APIs. Fue utilizado para la API de turnos.
+- Es un framework muy usado actualmente. En busca de crecimiento profesional por parte de los integrantes del grupo, pareció importante tener una experiencia con este framework, y por ende con Python.
 
 ## Descripción de módulos desarrollados durante la cursada que pudieron ser usados en el trabajo de promoción
 
 Ningún módulo desarrollado durante la cursada pudo ser reutilizado en el trabajo de promoción. La razón es que durante la cursada trabajamos con PHP (en su versión 5.6) y durante el trabajo de promoción utilizamos un framework basado en Python.
-Por ende, todas las funcionalidades tuvieron que ser escritas nuevamente. Sin embargo, ciertas ideas usadas durante la cursada (sobre cómo desarrollar funcionalidades) pudieron ser aplicados durante el trabajo de promoción. También pudo ser reutilizada la parte de JavaScript, específicamente los gráficos y DataTables.
+Por ende, todas las funcionalidades tuvieron que ser escritas nuevamente. 
+
+Sin embargo, ciertas ideas usadas durante la cursada (sobre cómo desarrollar funcionalidades) pudieron ser aplicados durante el trabajo de promoción. También pudo ser reutilizada la parte de JavaScript, específicamente los gráficos y DataTables.
 
 ## Mecanismo provisto para manejo de seguridad y routing
 
@@ -79,13 +81,13 @@ Prácticamente cada aplicación de nuestro trabajo (a excepción del Bot), tiene
 
 Para entender mejor, servirá un ejemplo:
 
-	En nuestro archivo “urls.py” antes nombrado, tenemos la siguiente línea de código:
+En nuestro archivo “urls.py” antes nombrado, tenemos la siguiente línea de código:
 
    ```python
    path('patient/', include ('apps.patient.urls', namespace="patient")),
    ```
 
-	Básicamente, lo que hacemos es delegar al archivo “urls.py” de la aplicación “Patient”, la tarea de resolver dicha dirección. El archivo “urls.py” de Patient contiene:
+Básicamente, lo que hacemos es delegar al archivo “urls.py” de la aplicación “Patient”, la tarea de resolver dicha dirección. El archivo “urls.py” de Patient contiene:
 
 ```python
 app_name = 'patient'
@@ -161,10 +163,10 @@ El árbol de directorios (de manera resumida) es:
 
 ## Materiales de referencia
 
-- Documentación de Django 2.0: (https://docs.djangoproject.com/en/2.0/)
-- Django REST framework: (http://www.django-rest-framework.org/)
-- Django-TelegramBot: (https://django-telegrambot.readthedocs.io/en/latest/)
-- Explicación MVT de Django: (https://docs.djangoproject.com/es/2.0/faq/general/#django-appears-to-be-a-mvc-framework-but-you-call-the-controller-the-view-and-the-view-the-template-how-come-you-don-t-use-the-standard-names)
-- Libro de Django 1.0 (si bien es una versión anterior, ha sido útil): (http://librosweb.es/libro/django_1_0/)
-- Django Bootstrap 4: (http://django-bootstrap4.readthedocs.io/en/stable/)
-- Django maintenance mode: (https://github.com/fabiocaccamo/django-maintenance-mode)
+- Documentación de Django 2.0: https://docs.djangoproject.com/en/2.0/
+- Django REST framework: http://www.django-rest-framework.org/
+- Django-TelegramBot: https://django-telegrambot.readthedocs.io/en/latest/
+- Explicación MVT de Django: https://docs.djangoproject.com/es/2.0/faq/general/#django-appears-to-be-a-mvc-framework-but-you-call-the-controller-the-view-and-the-view-the-template-how-come-you-don-t-use-the-standard-names
+- Libro de Django 1.0 (si bien es una versión anterior, ha sido útil): http://librosweb.es/libro/django_1_0/
+- Django Bootstrap 4: http://django-bootstrap4.readthedocs.io/en/stable/
+- Django maintenance mode: https://github.com/fabiocaccamo/django-maintenance-mode
